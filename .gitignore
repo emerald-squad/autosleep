@@ -4,6 +4,9 @@
 # Gradle resources and directory
 .gradle/
 build/
+common/bin/
+spring-apps/autosleep-core/bin/
+spring-apps/autowakeup-proxy/bin/
 #Customized by user
 manifest*.yml
 #local slf4j config
@@ -21,3 +24,6 @@ acceptance/acceptance.cfg
 
 dump.rdb
 acceptance/sandbox.robot
+.classpath
+.project
+.settings
