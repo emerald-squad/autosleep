@@ -153,7 +153,7 @@ public class AutosleepBindingService implements ServiceInstanceBindingService {
                 //call CFAPI to get routes associated to app
                 List<String> mappedRouteIds = cfApi.listApplicationRoutes(appId);
                 //retrieve saved route bindings and compare
-                List<Binding> linkedRouteBindings = bindingRepository.findByResourceIdAndType(mappedRouteIds, Route);
+                List<Binding> linkedRouteBindings = mappedRouteIds.isEmpty() ? Collections.emptyList() : bindingRepository.findByResourceIdAndType(mappedRouteIds, Route);
                 if (linkedRouteBindings.size() > 0) {
                     //clean all bindings in common set, provided they are related to the same service instance
                     linkedRouteBindings.stream()

@@ -57,6 +57,7 @@ import static org.cloudfoundry.autosleep.access.dao.model.Binding.ResourceType.A
 import static org.cloudfoundry.autosleep.access.dao.model.Binding.ResourceType.Route;
 import static org.cloudfoundry.autosleep.util.TestUtils.verifyThrown;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyListOf;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
@@ -386,6 +387,24 @@ public class AutosleepBindingServiceTest {
 
         //then it should be cleared from database
         verify(bindingRepository, times(1)).delete(testId);
+    }
+
+    @Test
+    public void should_not_crash_on_deletion_when_app_has_no_routes() throws Exception {
+        String testId = "testNoCrashDelNoRouteBinding";
+
+        final DeleteServiceInstanceBindingRequest deleteRequest = prepareDeleteAppRouteTest(testId, testId, testId);
+
+        // app has no route in cf
+        when(cfApi.listApplicationRoutes(testId)).thenReturn(Collections.emptyList());
+        
+        //given that we known the route
+        when(bindingRepository.findOne(testId)).thenReturn(BeanGenerator.createRouteBinding(testId));
+        //when unbinding the route
+        bindingService.deleteServiceInstanceBinding(deleteRequest);
+
+        //then it should be cleared from database
+        verify(bindingRepository, never()).findByResourceIdAndType(anyListOf(String.class), any());
     }
 
 }
